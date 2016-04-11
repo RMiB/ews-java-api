@@ -3735,11 +3735,12 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
   /**
    * Prepare http web request.
    *
+   * @param timeout If specified then overrides service level timeout value
    * @return the http web request
    * @throws ServiceLocalException       the service local exception
    * @throws java.net.URISyntaxException the uRI syntax exception
    */
-  public HttpWebRequest prepareHttpWebRequest()
+  public HttpWebRequest prepareHttpWebRequest(Integer timeout)
       throws ServiceLocalException, URISyntaxException {
     try {
       this.url = this.adjustServiceUriFromCredentials(this.getUrl());
@@ -3747,17 +3748,18 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
       LOG.error(e);
     }
     return this.prepareHttpWebRequestForUrl(url, this
-        .getAcceptGzipEncoding(), true);
+        .getAcceptGzipEncoding(), true, timeout);
   }
 
   /**
    * Prepares a http web request from a pooling connection manager, used for subscriptions.
-   * 
+   *
+   * @param timeout If specified then overrides service level timeout value
    * @return A http web request
    * @throws ServiceLocalException The service local exception
    * @throws java.net.URISyntaxException the uRI syntax exception
    */
-  public HttpWebRequest prepareHttpPoolingWebRequest()
+  public HttpWebRequest prepareHttpPoolingWebRequest(Integer timeout)
 	      throws ServiceLocalException, URISyntaxException {
 	    try {
 	      this.url = this.adjustServiceUriFromCredentials(this.getUrl());
@@ -3765,7 +3767,7 @@ public class ExchangeService extends ExchangeServiceBase implements IAutodiscove
 	      LOG.error(e);
 	    }
 	    return this.prepareHttpPoolingWebRequestForUrl(url, this
-	        .getAcceptGzipEncoding(), true);
+	        .getAcceptGzipEncoding(), true, timeout);
 	  }
 
   /**
