@@ -384,17 +384,17 @@ public abstract class ServiceRequestBase<T> {
   protected T readResponse(HttpWebRequest response) throws Exception {
     T serviceResponse;
 
-    if (!response.getResponseContentType().startsWith("text/xml")) {
-      throw new ServiceRequestException("The response received from the service didn't contain valid XML.");
-    }
-
-    /**
+     /**
      * If tracing is enabled, we read the entire response into a
      * MemoryStream so that we can pass it along to the ITraceListener. Then
      * we parse the response from the MemoryStream.
      */
 
     try {
+      if (!response.getResponseContentType().startsWith("text/xml")) {
+        throw new ServiceRequestException("The response received from the service didn't contain valid XML.");
+      }
+
       this.getService().processHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, response);
 
       if (this.getService().isTraceEnabledFor(TraceFlags.EwsResponse)) {
@@ -427,8 +427,12 @@ public abstract class ServiceRequestBase<T> {
       throw new ServiceRequestException(String.format("The request failed. %s", e.getMessage()), e);
     } catch (IOException e) {
       throw new ServiceRequestException(String.format("The request failed. %s", e.getMessage()), e);
-    } finally { // close the underlying response
-      response.close();
+    } finally {
+      try {
+        response.close();
+      } catch (Exception e2) {
+        // Ignore exception while closing the request.
+      }
     }
   }
 
